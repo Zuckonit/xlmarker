@@ -1,4 +1,5 @@
-#coding: utf-8
+#!/usr/bin/env python
+# encoding: utf-8
 
 from optparse import OptionParser
 from glob import glob
@@ -35,18 +36,16 @@ def loader(f):
     """load excel to data structure
         {"Company": [(row, col_for_mark), (row2, col2]}
     """
-    fname = osp.basename(f)
     fd = xlrd.open_workbook(f)
     table = fd.sheet_by_index(0)  #only one table of each xls
     row0 = table.row_values(0)
     rows = table.nrows
     cols = table.ncols
-    xls_name = table.name
     d = {}
 
     key_col = get_unique_key_col(row0)
     if key_col == -1:
-        raise Exception(u"Excel sheet should have item {0}".format(KEY))
+        raise Exception(u"Excel sheet should have item {0}".format(UNIQUE_KEY))
     mark_col = get_mark_key_col(row0)
     should_add_mark_label = True if mark_col == -1 else False  #add mark label
     mark_col = cols if mark_col == -1 else mark_col
@@ -112,9 +111,9 @@ def mark_processor(f1, f2):
 def optargs(arg):
     parser = OptionParser(usage="usage: %prog", version="%prog 0.0.2")
     parser.add_option('-f', "--file", dest='file', metavar='FILE', 
-            help='sheet A')
+            help='参照表(A表)')
     parser.add_option('-d', '--directory', dest='directory', metavar='DIR',
-            help='sheet B directory')
+            help='待标记表格所在目录(B表目录)')
     return parser.parse_args(arg)
 
 
